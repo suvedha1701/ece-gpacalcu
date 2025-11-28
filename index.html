@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECE GPA & CGPA Calculator</title>
+    
+    <style>
+        /* --- GENERAL & BODY STYLES (GRAND) --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern, clean font */
+            margin: 0; 
+            padding: 0;
+            background-color: #ebeff4; /* Subtle light cool grey background */
+            color: #333;
+        }
+
+        /* --- HEADER STYLES (IMPOSING) --- */
+        header {
+            margin-bottom: 40px;
+            padding: 30px 15px; /* Increased vertical padding for height */
+            background-color: #1f334a; /* Darker, richer navy blue */
+            color: white;
+            /* Removed border-radius as headers often span full width */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Deep shadow for 3D effect */
+        }
+
+        #college-logo {
+            height: 70px; /* Slightly larger logo */
+            width: 70px; 
+            margin-right: 20px;
+            border-radius: 50%; 
+            background-color: #ecf0f1; /* Light background for contrast */
+            padding: 5px;
+            object-fit: contain; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Shadow on the logo itself */
+            border: 3px solid #f39c12; /* Accent border around the logo */
+        }
+
+        #header-text {
+            line-height: 1.2;
+        }
+
+        #header-text h1 {
+            color: #f39c12; /* Deep Gold/Amber color for grandeur */
+            margin: 0;
+            font-size: 2.2em; /* Larger main title */
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        #header-text h2 {
+            color: #ffffff;
+            margin: 5px 0 0;
+            font-size: 1.4em;
+            font-weight: 400;
+        }
+        
+        #header-text p {
+            color: #ffffff;
+            margin: 5px 0 0;
+            font-size: 1.1em;
+            font-style: italic;
+        }
+
+        /* --- MAIN MENU STYLES --- */
+        #main-menu {
+            display: flex; /* Changed to flex for horizontal alignment */
+            justify-content: center;
+            gap: 20px; /* Space between buttons */
+            margin-bottom: 40px;
+        }
+
+        #main-menu button {
+            padding: 12px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #3a7bd5; /* Richer blue */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
+            box-shadow: 0 4px 0 #2c5ba3; /* Initial 3D shadow */
+        }
+
+        #main-menu button:hover {
+            background-color: #2c5ba3;
+        }
+
+        #main-menu button:active {
+            transform: translateY(4px); /* Press down effect */
+            box-shadow: 0 0px 0 #2c5ba3; 
+        }
+
+        /* --- CALCULATOR SECTION STYLES (DEPTH) --- */
+        .calculator-section {
+            width: 80%;
+            max-width: 900px;
+            margin: 0 auto 30px auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Deeper, softer shadow */
+            border: 1px solid #dcdcdc; /* Subtle light border */
+        }
+
+        .calculator-section h2 {
+            color: #1f334a;
+            border-bottom: 2px solid #f39c12; /* Grand accent line */
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        /* --- INPUT & LIST STYLES --- */
+        #subject-list, #cgpa-input-wrapper {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #e0e0e0; 
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        
+        .subject-row, .semester-gpa-input-row {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 10px 0;
+            font-size: 1.1em;
+            border-bottom: 1px solid #eee;
+        }
+
+        .subject-row:last-child, .semester-gpa-input-row:last-child {
+            border-bottom: none; 
+        }
+
+        .grade-select, .cgpa-gpa-input {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            min-width: 150px;
+        }
+        
+        /* --- CALCULATE GPA BUTTON STYLES (CENTERED & PROMINENT) --- */
+        #calculate-gpa-btn {
+            display: block; 
+            width: 300px; /* Made even larger */
+            margin: 25px auto; /* Increased margin */
+            
+            padding: 15px 30px; 
+            font-size: 20px; 
+            background-color: #c0392b; /* Deep red */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
+            font-weight: bold;
+            box-shadow: 0 6px 0 #922c20; /* 3D Shadow */
+        }
+
+        #calculate-gpa-btn:hover {
+            background-color: #922c20; 
+        }
+        
+        #calculate-gpa-btn:active {
+            transform: translateY(6px); /* Press down effect */
+            box-shadow: 0 0px 0 #922c20; 
+        }
+
+
+        /* --- CALCULATE CGPA BUTTON STYLES (CENTERED & PROMINENT) --- */
+        #calculate-cgpa-btn {
+            display: block; 
+            width: 300px; /* Same size as GPA button */
+            margin: 25px auto; 
+            
+            padding: 15px 30px; 
+            font-size: 20px; 
+            background-color: #3a7bd5; /* Richer blue */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
+            font-weight: bold;
+            box-shadow: 0 6px 0 #2c5ba3; /* 3D Shadow */
+        }
+
+        #calculate-cgpa-btn:hover {
+            background-color: #2c5ba3; 
+        }
+
+        #calculate-cgpa-btn:active {
+            transform: translateY(6px); /* Press down effect */
+            box-shadow: 0 0px 0 #2c5ba3; 
+        }
+
+        /* --- RESULT BOX STYLES (ENHANCED) --- */
+        .result-box {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px solid #3a7bd5;
+            border-radius: 8px;
+            background-color: #f6f9fc;
+            box-shadow: 0 2px 8px rgba(58, 123, 213, 0.3); /* Subtle blue glow */
+        }
+        .highlight {
+            font-size: 1.6em;
+            color: #c0392b; /* Deep red for emphasis */
+            font-weight: 700;
+        }
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .gpa-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .gpa-table th, .gpa-table td {
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            text-align: left;
+        }
+        .gpa-table th {
+            background-color: #dbe4f3; /* Light blue header */
+            font-weight: 600;
+            color: #1f334a;
+            text-align: center;
+        }
+        .gpa-table td:nth-child(2), 
+        .gpa-table td:nth-child(3), 
+        .gpa-table td:nth-child(4) { 
+            text-align: center;
+            width: 10%;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img id="college-logo" src="cgpa/VCET.JPG" alt="College Logo"> 
+        
+        <div id="header-text">
+            <h1>VELAMMAL COLLEGE OF ENGINEERING AND TECHNOLOGY</h1>
+            <h2>DEPARTMENT OF ELECTRONICS AND COMMUNICATION ENGINEERING</h2>
+            <p>GPA & CGPA Calculator</p>
+        </div>
+    </header>
+
+    <div id="main-menu">
+        <button onclick="showCalculator('gpa')"> GPA Calculator</button>
+        <button onclick="showCalculator('cgpa')">CGPA Calculator</button>
+    </div>
+
+    <div id="gpa-calculator" class="calculator-section" style="display: none;">
+        <h2>Semester GPA Calculator</h2>
+        <div id="semester-selector">
+            <label for="semester-select">Choose Semester:</label>
+            <select id="semester-select" onchange="loadSubjects()">
+                <option value="">-- Select Semester --</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+            </select>
+        </div>
+        
+        <div id="subject-list">
+            </div>
+
+        <button id="calculate-gpa-btn" onclick="calculateGPA()" style="display: none;">Calculate GPA</button>
+
+        <div id="gpa-result" class="result-box">
+            </div>
+    </div>
+
+    <div id="cgpa-calculator" class="calculator-section" style="display: none;">
+        <h2>Cumulative CGPA Calculator</h2>
+        <p>Select the final semester you want to calculate your CGPA up to.</p>
+        
+        <div id="cgpa-semester-selector">
+            <label for="cgpa-sem-select">Calculate CGPA up to Semester:</label>
+            <select id="cgpa-sem-select" onchange="loadCgpaInputs()">
+                <option value="">-- Select Semester --</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+            </select>
+        </div>
+
+        <div id="cgpa-input-wrapper">
+            </div>
+
+        <button id="calculate-cgpa-btn" onclick="calculateCGPA()" style="display: none;">Calculate CGPA</button>
+
+        <div id="cgpa-result" class="result-box">
+            </div>
+    </div>
+
+    <script>
+        // --- FIXED DATA SETUP: ECE SUBJECTS (SEMESTERS 1-8) ---
+
+        const ECE_SUBJECTS = {
+            '1': [
+                { name: 'Professional English - I', credits: 4 },
+                { name: 'Matrices and Calculus', credits: 4 },
+                { name: 'Engineering Physics', credits: 3 },
+                { name: 'Engineering Chemistry', credits: 3 },
+                { name: 'Problem Solving and Python Programming', credits: 3 },
+                { name: 'Heritage of Tamils', credits: 1 },
+                { name: 'Problem Solving and Python Programming Laboratory', credits: 2 },
+                { name: 'Physics and Chemistry Laboratory', credits: 2 },
+            ],
+            '2': [
+                { name: 'English - II', credits: 3 },
+                { name: 'Engineering Graphics', credits: 3 },
+                { name: 'Physics for Electronics Engineering', credits: 3 },
+                { name: 'Electronic Devices', credits: 3 },
+                { name: 'C Programming', credits: 2 },
+                { name: 'Sampling Techniques and Numerical Methods', credits: 4 },
+                { name: 'Circuit Analysis', credits: 3 },
+                { name: 'Tamils and Technology', credits: 1 },
+                { name: 'Engineering Practices Laboratory', credits: 2 },
+                { name: 'Electronic Devices and Circuits Laboratory', credits: 2 },
+            ],
+            '3': [
+                { name: 'Transforms and Partial Differential Equations', credits: 4 },
+                { name: 'Digital Principles and System Design', credits: 3 },
+                { name: 'Electronic Circuits I', credits: 3 },
+                { name: 'Signals and Systems', credits: 3 },
+                { name: 'Object Oriented Programming and Data Structures', credits: 3 },
+                { name: 'Linear Integrated Circuits (TwP)', credits: 4 },
+                { name: 'Analog and Digital Circuits Laboratory', credits: 2 },
+                { name: 'Object Oriented Programming Laboratory', credits: 2 },
+            ],
+            '4': [
+                { name: 'Environmental Science', credits: 2 },
+                { name: 'Electronic Circuits II', credits: 3 },
+                { name: 'Electromagnetic Fields', credits: 3 },
+                { name: 'Microprocessors and Microcontrollers', credits: 3 },
+                { name: 'Analog Communication (TwP)', credits: 4 },
+                { name: 'Probability and Random Processes', credits: 4 },
+                { name: 'Circuit Design and Simulation Laboratory', credits: 2 },
+                { name: 'Microprocessors and Microcontrollers Laboratory', credits: 2 },
+            ],
+            '5': [
+                { name: 'Digital Communication', credits: 3 },
+                { name: 'Transmission Lines and RF Systems', credits: 3 },
+                { name: 'Professional Elective I', credits: 3 },
+                { name: 'Professional Elective II', credits: 3 },
+                { name: 'Digital Signal Processing', credits: 4 },
+                { name: 'Professional Communication (Lab)', credits: 1 },
+                { name: 'Internship', credits: 1 },
+            ],
+            '6': [
+                { name: 'Antennas and Wave Propagation', credits: 3 },
+                { name: 'VLSI and Chip Design', credits: 3 },
+                { name: 'Professional Elective III', credits: 3 },
+                { name: 'Open Elective I', credits: 3 },
+                { name: 'Communication Networks', credits: 4 },
+                { name: 'VLSI Design Laboratory', credits: 2 },
+                { name: 'Communication Networks Laboratory', credits: 2 },
+            ],
+            '7': [
+                { name: 'Microwave and Optical Engineering', credits: 3 },
+                { name: 'Satellite Communication', credits: 3 },
+                { name: 'Professional Elective IV', credits: 3 },
+                { name: 'Open Elective II', credits: 3 },
+                { name: 'Open Elective III', credits: 3 },
+                { name: 'One Credit Course', credits: 1 },
+                { name: 'Microwave and Optical Laboratory', credits: 2 },
+                { name: 'Project Work I', credits: 2 },
+            ],
+            '8': [
+                { name: 'Professional Elective V', credits: 3 },
+                { name: 'Professional Elective VI', credits: 3 },
+                { name: 'Project Work II', credits: 10 } 
+            ]
+        };
+
+        // --- FIXED DATA SETUP: SEMESTER TOTAL CREDITS (UPDATED FOR 8 SEMS) ---
+        const SEMESTER_CREDITS = {
+            '1': 22, 
+            '2': 26, 
+            '3': 24, 
+            '4': 23, 
+            '5': 18, 
+            '6': 18, 
+            '7': 20, 
+            '8': 16  
+        };
+        
+        const GRADE_POINTS = {
+            'O': 10, 'A+': 9, 'A': 8, 'B+': 7, 'B': 6, 'C': 5, 'U': 0, 
+        };
+
+        // --- All JavaScript Functions (UNCHANGED) ---
+        function showCalculator(type) {
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('gpa-calculator').style.display = 'none';
+            document.getElementById('cgpa-calculator').style.display = 'none';
+
+            if (type === 'gpa') {
+                document.getElementById('gpa-calculator').style.display = 'block';
+            } else if (type === 'cgpa') {
+                document.getElementById('cgpa-calculator').style.display = 'block';
+                document.getElementById('cgpa-sem-select').value = "";
+                document.getElementById('cgpa-input-wrapper').innerHTML = "";
+                document.getElementById('calculate-cgpa-btn').style.display = 'none';
+                document.getElementById('cgpa-result').innerHTML = "";
+            }
+        }
+
+        function loadSubjects() {
+            const selectedSem = document.getElementById('semester-select').value;
+            const subjectListDiv = document.getElementById('subject-list');
+            const calculateBtn = document.getElementById('calculate-gpa-btn');
+            
+            subjectListDiv.innerHTML = '';
+            document.getElementById('gpa-result').innerHTML = '';
+
+            if (selectedSem && ECE_SUBJECTS[selectedSem]) {
+                calculateBtn.style.display = 'block';
+                ECE_SUBJECTS[selectedSem].forEach((subject, index) => {
+                    const row = document.createElement('div');
+                    row.classList.add('subject-row');
+                    row.innerHTML = `
+                        <span class="subject-name">${subject.name} (${subject.credits} Credits)</span>
+                        <select class="grade-select" data-credits="${subject.credits}" id="grade-${index}">
+                            <option value="">Choose Grade</option>
+                            ${Object.keys(GRADE_POINTS).map(grade => `<option value="${grade}">${grade}</option>`).join('')}
+                        </select>
+                    `;
+                    subjectListDiv.appendChild(row);
+                });
+            } else {
+                calculateBtn.style.display = 'none';
+            }
+        }
+
+        function calculateGPA() {
+            const selectedSem = document.getElementById('semester-select').value;
+            const gradeSelects = document.querySelectorAll('#subject-list .grade-select');
+            let totalGradePoints = 0;
+            let totalCredits = 0;
+            let tableRows = '';
+            let incomplete = false;
+
+            gradeSelects.forEach((select) => {
+                const grade = select.value;
+                const credits = parseFloat(select.getAttribute('data-credits'));
+                const subjectName = select.previousElementSibling.textContent.split('(')[0].trim();
+                
+                if (!grade) {
+                    incomplete = true;
+                    return;
+                }
+
+                const gradePoint = GRADE_POINTS[grade];
+                const subjectGradePoints = gradePoint * credits;
+
+                totalGradePoints += subjectGradePoints;
+                totalCredits += credits;
+                
+                tableRows += `
+                    <tr>
+                        <td>${subjectName}</td>
+                        <td>${credits}</td>
+                        <td>${grade}</td>
+                        <td>${gradePoint}</td> 
+                    </tr>
+                `;
+            });
+
+            const gpaResultDiv = document.getElementById('gpa-result');
+            if (incomplete) {
+                gpaResultDiv.innerHTML = '<p class="error">Please select a grade for all subjects.</p>';
+                return;
+            }
+
+            if (totalCredits === 0) {
+                gpaResultDiv.innerHTML = '<p class="error">Cannot calculate GPA. Total credits are zero.</p>';
+                return;
+            }
+
+            const calculatedGPA = totalGradePoints / totalCredits;
+            
+            let resultHTML = `
+                <h2>Semester ${selectedSem} GPA: <span class="highlight">${calculatedGPA.toFixed(2)}</span></h2>
+                <p>Total Grade Points: ${totalGradePoints.toFixed(2)} / Total Credits: ${totalCredits}</p>
+                <hr/>
+                <h3>Subject-wise Performance:</h3>
+                <table class="gpa-table">
+                    <thead>
+                        <tr>
+                            <th>Course Title</th>
+                            <th>Credits</th>
+                            <th>Grade Secured</th>
+                            <th>Grade Point</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+            `;
+
+            gpaResultDiv.innerHTML = resultHTML;
+        }
+
+        function loadCgpaInputs() {
+            const maxSem = parseInt(document.getElementById('cgpa-sem-select').value);
+            const inputWrapper = document.getElementById('cgpa-input-wrapper');
+            const calculateBtn = document.getElementById('calculate-cgpa-btn');
+            
+            inputWrapper.innerHTML = '';
+            document.getElementById('cgpa-result').innerHTML = '';
+            
+            if (isNaN(maxSem) || maxSem < 1) {
+                calculateBtn.style.display = 'none';
+                return;
+            }
+
+            calculateBtn.style.display = 'block';
+
+            for (let i = 1; i <= maxSem; i++) {
+                const credits = SEMESTER_CREDITS[String(i)];
+                
+                if (credits === undefined) {
+                    inputWrapper.innerHTML += `<p class="error">Error: Fixed credits for Semester ${i} are missing in the code.</p>`;
+                    calculateBtn.style.display = 'none';
+                    return;
+                }
+
+                const row = document.createElement('div');
+                row.classList.add('semester-gpa-input-row');
+                row.innerHTML = `
+                    <label for="cgpa-gpa-${i}">Semester ${i} GPA (Credits: ${credits}):</label>
+                    <input type="number" step="0.01" min="0" max="10" 
+                           class="cgpa-gpa-input" 
+                           data-credits="${credits}" 
+                           id="cgpa-gpa-${i}" 
+                           placeholder="e.g., 9.00">
+                `;
+                inputWrapper.appendChild(row);
+            }
+        }
+
+        function calculateCGPA() {
+            const gpaInputs = document.querySelectorAll('.cgpa-gpa-input');
+            let cumulativeGradePoints = 0;
+            let cumulativeCredits = 0;
+            let incomplete = false;
+
+            for (let i = 0; i < gpaInputs.length; i++) {
+                const gpaInput = gpaInputs[i];
+                const gpa = parseFloat(gpaInput.value);
+                const credits = parseFloat(gpaInput.getAttribute('data-credits')); 
+                
+                if (isNaN(gpa) || gpa < 0) {
+                    incomplete = true;
+                    break; 
+                }
+                
+                cumulativeGradePoints += gpa * credits;
+                cumulativeCredits += credits;
+            }
+            
+            const cgpaResultDiv = document.getElementById('cgpa-result');
+            if (incomplete) {
+                cgpaResultDiv.innerHTML = '<p class="error">Please enter a valid GPA (0-10) for all displayed semesters.</p>';
+                return;
+            }
+
+            if (cumulativeCredits === 0) {
+                cgpaResultDiv.innerHTML = '<p class="error">Total cumulative credits cannot be zero.</p>';
+                return;
+            }
+
+            const calculatedCGPA = cumulativeGradePoints / cumulativeCredits;
+
+            cgpaResultDiv.innerHTML = `
+                <h2><span class="highlight">Calculated CGPA: ${calculatedCGPA.toFixed(2)}</span></h2>
+                <p>Total Cumulative Grade Points: ${cumulativeGradePoints.toFixed(2)}</p>
+                <p>Total Cumulative Credits: ${cumulativeCredits}</p>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('gpa-calculator').style.display = 'none';
+            document.getElementById('cgpa-calculator').style.display = 'none';
+            document.getElementById('main-menu').style.display = 'flex'; /* Ensure main menu is visible initially */
+        });
+    </script>
+</body>
+</html>
